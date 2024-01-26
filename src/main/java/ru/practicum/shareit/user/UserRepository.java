@@ -7,8 +7,12 @@ import java.util.List;
 public interface UserRepository {
 
     List<UserDto> getUsers();
-    UserDto getUserByid(Long userId);
+
+    UserDto getUserById(Long userId);
+
     UserDto createUser(UserDto user);
+
     UserDto updateUser(UserDto updateUser, Long userId);
+
     void deleteUser(Long userId);
 }

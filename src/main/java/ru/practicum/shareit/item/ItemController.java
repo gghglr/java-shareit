@@ -16,7 +16,7 @@ import java.util.List;
 @Slf4j
 public class ItemController {
 
- private final ItemService itemService;
+    private final ItemService itemService;
 
     @Autowired
     public ItemController(ItemServiceImpl itemServiceImpl) {
@@ -24,33 +24,33 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") Long userId,@Valid @RequestBody ItemDto itemDto){
+    public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") Long userId, @Valid @RequestBody ItemDto itemDto) {
         log.info("Получен запрос на добавление вещи");
         return itemService.createItem(userId, itemDto);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") Long userId, @RequestBody ItemDto ItemDto,
-                                     @PathVariable("itemId") Long itemId){
+    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") Long userId, @RequestBody ItemDto itemDto,
+                              @PathVariable("itemId") Long itemId) {
         log.info("Получен запрос на обновление информации о вещи");
-        return itemService.updateItem(userId, ItemDto, itemId);
+        return itemService.updateItem(userId, itemDto, itemId);
     }
 
     @GetMapping
-    public List<ItemDto> getAllItemForOwner(@RequestHeader("X-Sharer-User-Id") Long userId){
+    public List<ItemDto> getAllItemForOwner(@RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Владелец запросил список своих вещей");
         return itemService.getAllItemForOwner(userId);
     }
 
     @GetMapping("/search")
     public List<ItemDto> searchItem(@RequestHeader("X-Sharer-User-Id") Long userId,
-                              @RequestParam(name = "text", defaultValue = "") String text){
+                                    @RequestParam(name = "text", defaultValue = "") String text) {
         log.info("Запрос на поиск вещи по содержанию");
         return itemService.searchItem(userId, text);
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItemById(@PathVariable("itemId") Long itemId){
+    public ItemDto getItemById(@PathVariable("itemId") Long itemId) {
         log.info("Получен запрос на поиск вещи по id");
         return itemService.getItemById(itemId);
     }

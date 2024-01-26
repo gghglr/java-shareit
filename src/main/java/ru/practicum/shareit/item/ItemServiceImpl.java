@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ItemServiceImpl implements ItemService{
+public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
 
@@ -34,7 +34,7 @@ public class ItemServiceImpl implements ItemService{
 
     @Override
     public List<ItemDto> searchItem(Long userId, String text) {
-        if(text.isBlank()){
+        if (text.isBlank()) {
             return new ArrayList<>();
         }
         return itemRepository.searchItem(userId, text);

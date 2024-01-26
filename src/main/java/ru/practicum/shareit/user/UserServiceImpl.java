@@ -7,12 +7,12 @@ import ru.practicum.shareit.user.dto.UserDto;
 import java.util.List;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepositoryImpl userRepositoryImpl){
+    public UserServiceImpl(UserRepositoryImpl userRepositoryImpl) {
         this.userRepository = userRepositoryImpl;
     }
 
@@ -22,8 +22,8 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserDto getUserByid(Long userId) {
-        return userRepository.getUserByid(userId);
+    public UserDto getUserById(Long userId) {
+        return userRepository.getUserById(userId);
     }
 
     @Override

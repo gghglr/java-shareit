@@ -11,33 +11,32 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class UserRepositoryImpl implements UserRepository{
+public class UserRepositoryImpl implements UserRepository {
 
     private Map<Long, User> users = new HashMap<>();//айди юзера и сам юзер
     private final Map<String, User> userEmailRepository = new HashMap<>();
     Long userId = 1L;
+
     @Override
     public List<UserDto> getUsers() {
-       return users.values().stream().map(x->UserMapper.userToDto(x)).collect(Collectors.toList());
+        return users.values().stream().map(x -> UserMapper.userToDto(x)).collect(Collectors.toList());
     }
 
     @Override
-    public UserDto getUserByid(Long userId) {
-       if(users.containsKey(userId)){
-           return UserMapper.userToDto(users.get(userId));
-       }
-       else {
-           throw new NotFoundException("пользователя не существует");
-       }
+    public UserDto getUserById(Long userId) {
+        if (users.containsKey(userId)) {
+            return UserMapper.userToDto(users.get(userId));
+        } else {
+            throw new NotFoundException("пользователя не существует");
+        }
     }
 
     @Override
     public UserDto createUser(UserDto userDto) {
-        if(userEmailRepository.containsKey(userDto.getEmail())){
+        if (userEmailRepository.containsKey(userDto.getEmail())) {
             throw new AlreadyExsist("Пользователь c такой почтой уже существует");
-        }
-        else {
-            if(userDto.getId() == null){
+        } else {
+            if (userDto.getId() == null) {
                 userDto.setId(userId);
             }
             User user = UserMapper.toUser(userDto);
@@ -57,13 +56,13 @@ public class UserRepositoryImpl implements UserRepository{
             users.get(userId).setEmail(updateUser.getEmail());
             users.get(userId).setName(updateUser.getName());
             userEmailRepository.put(users.get(userId).getEmail(), users.get(userId));
-        }else if(updateUser.getEmail() != null){
+        } else if (updateUser.getEmail() != null) {
             validateForExistEmailWithOtherOwner(userId, updateUser);
             userEmailRepository.remove(users.get(userId).getEmail());
             users.get(userId).setEmail(updateUser.getEmail());
             userEmailRepository.put(users.get(userId).getEmail(), users.get(userId));
             updateUser.setName(users.get(userId).getName());
-        }else{
+        } else {
             users.get(userId).setName(updateUser.getName());
             userEmailRepository.put(users.get(userId).getEmail(), users.get(userId));
             updateUser.setEmail(users.get(userId).getEmail());
@@ -73,18 +72,17 @@ public class UserRepositoryImpl implements UserRepository{
 
     @Override
     public void deleteUser(Long userId) {
-        if(users.containsKey(userId)){
+        if (users.containsKey(userId)) {
             userEmailRepository.remove(users.get(userId).getEmail());
             users.remove(userId);
-        }
-        else{
+        } else {
             throw new NotFoundException("Ошибка удаления пользователя: пользователь не найден");
         }
     }
 
     private void validateFoundForUser(Long userId) {
         if (!users.containsKey(userId)) {
-            throw new NotFoundException ("Пользователь не найден");
+            throw new NotFoundException("Пользователь не найден");
         }
     }
 
