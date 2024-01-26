@@ -45,7 +45,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public ItemDto updateItem(Long userId, ItemDto itemDto, Long itemId) {
+    public ItemDto updateItem(long userId, ItemDto itemDto, long itemId) {
         if (items.get(itemId).getOwner() == userId) {
             if (itemDto.getDescription() != null && itemDto.getName() != null) {
                 items.get(itemId).setName(itemDto.getName());
