@@ -12,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 public class ItemDto {
 
-    private Long id;
+    private long id;
     @NotBlank(message = "поле name пустое")
     private String name;
     @NotBlank(message = "описание пустое")

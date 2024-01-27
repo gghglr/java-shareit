@@ -9,10 +9,10 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 public class Item {
 
-    private Long id;
+    private long id;
     private String name;
     private String description;
     private boolean available;
-    private Long owner;
+    private long owner;
     private String request;
 }

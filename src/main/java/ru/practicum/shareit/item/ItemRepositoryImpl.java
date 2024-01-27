@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exception.Forbidden;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.model.ItemMapper;
 import ru.practicum.shareit.user.UserRepositoryImpl;
 
 import java.util.ArrayList;
@@ -18,18 +16,15 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ItemRepositoryImpl implements ItemRepository {
 
-    private Long id = 1L;
     private Map<Long, Item> items = new HashMap<>(); //айди вещи и вещь
     private Map<Long, List<Long>> itemsPerOwner = new HashMap<>(); //айди владельца и список
     private final UserRepositoryImpl userRepository;
+    private long id = 1;
 
     @Override
-    public ItemDto createItem(Long userId, ItemDto itemDto) {
+    public Item createItem(Long userId, Item item) {
         userRepository.getUserById(userId);
-        if (itemDto.getId() == null) {
-            itemDto.setId(id);
-        }
-        Item item = ItemMapper.toItem(itemDto);
+        item.setId(id);
         item.setOwner(userId);
         List<Long> itemList;
         if (itemsPerOwner.containsKey(userId)) {
@@ -41,56 +36,56 @@ public class ItemRepositoryImpl implements ItemRepository {
         itemsPerOwner.put(userId, itemList);
         items.put(item.getId(), item);
         id++;
-        return itemDto;
+        return item;
     }
 
     @Override
-    public ItemDto updateItem(long userId, ItemDto itemDto, long itemId) {
+    public Item updateItem(long userId, Item item, long itemId) {
         if (items.get(itemId).getOwner() == userId) {
-            if (itemDto.getDescription() != null && itemDto.getName() != null) {
-                items.get(itemId).setName(itemDto.getName());
-                items.get(itemId).setDescription(itemDto.getDescription());
-                items.get(itemId).setAvailable(itemDto.isAvailable());
-            } else if (itemDto.getDescription() != null && itemDto.getName() == null) {
-                items.get(itemId).setDescription(itemDto.getDescription());
-            } else if (itemDto.getDescription() == null && itemDto.getName() != null) {
-                items.get(itemId).setName(itemDto.getName());
+            if (item.getDescription() != null && item.getName() != null) {
+                items.get(itemId).setName(item.getName());
+                items.get(itemId).setDescription(item.getDescription());
+                items.get(itemId).setAvailable(item.isAvailable());
+            } else if (item.getDescription() != null && item.getName() == null) {
+                items.get(itemId).setDescription(item.getDescription());
+            } else if (item.getDescription() == null && item.getName() != null) {
+                items.get(itemId).setName(item.getName());
             } else {
-                items.get(itemId).setAvailable(itemDto.isAvailable());
+                items.get(itemId).setAvailable(item.isAvailable());
             }
         } else {
             throw new Forbidden("Только владелец имеет право изменять параметры вещи");
         }
-        return ItemMapper.toItemDto(items.get(itemId));
+        return items.get(itemId);
     }
 
     @Override
-    public List<ItemDto> getAllItemForOwner(Long userId) {
+    public List<Item> getAllItemForOwner(Long userId) {
         List<Long> itemIdForOwner = itemsPerOwner.get(userId);
-        List<ItemDto> itemsDto = new ArrayList<>();
+        List<Item> itemsForReturn = new ArrayList<>();
         for (Long id : itemIdForOwner) {
-            itemsDto.add(ItemMapper.toItemDto(items.get(id)));
+            itemsForReturn.add(items.get(id));
         }
-        return itemsDto;
+        return itemsForReturn;
     }
 
     @Override
-    public List<ItemDto> searchItem(Long userId, String text) {
-        List<ItemDto> itemsDto = new ArrayList<>();
+    public List<Item> searchItem(Long userId, String text) {
+        List<Item> itemsSearched = new ArrayList<>();
         for (Item item : items.values()) {
             if ((item.getName().toLowerCase().contains(text.toLowerCase())
                     || item.getDescription().toLowerCase().contains(text.toLowerCase()))
                     && item.isAvailable()) {
-                itemsDto.add(ItemMapper.toItemDto(item));
+                itemsSearched.add(item);
             }
         }
-        return itemsDto;
+        return itemsSearched;
     }
 
     @Override
-    public ItemDto getItemById(Long itemId) {
+    public Item getItemById(Long itemId) {
         try {
-            return ItemMapper.toItemDto(items.get(itemId));
+            return items.get(itemId);
         } catch (NotFoundException e) {
             throw new NotFoundException("Вещи не существует");
         }

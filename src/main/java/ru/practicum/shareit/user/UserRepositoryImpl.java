@@ -3,7 +3,6 @@ package ru.practicum.shareit.user;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exception.AlreadyExsist;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,56 +17,53 @@ public class UserRepositoryImpl implements UserRepository {
     Long userId = 1L;
 
     @Override
-    public List<UserDto> getUsers() {
-        return users.values().stream().map(x -> UserMapper.userToDto(x)).collect(Collectors.toList());
+    public List<User> getUsers() {
+        return users.values().stream().collect(Collectors.toList());
     }
 
     @Override
-    public UserDto getUserById(Long userId) {
+    public User getUserById(Long userId) {
         if (users.containsKey(userId)) {
-            return UserMapper.userToDto(users.get(userId));
+            return users.get(userId);
         } else {
             throw new NotFoundException("пользователя не существует");
         }
     }
 
     @Override
-    public UserDto createUser(UserDto userDto) {
-        if (userEmailRepository.containsKey(userDto.getEmail())) {
+    public User createUser(User user) {
+        if (userEmailRepository.containsKey(user.getEmail())) {
             throw new AlreadyExsist("Пользователь c такой почтой уже существует");
         } else {
-            if (userDto.getId() == null) {
-                userDto.setId(userId);
-            }
-            User user = UserMapper.toUser(userDto);
+            user.setId(userId);
             users.put(userId, user);
             userId++;
-            userEmailRepository.put(userDto.getEmail(), user);
+            userEmailRepository.put(user.getEmail(), user);
         }
-        return userDto;
+        return user;
     }
 
     @Override
-    public UserDto updateUser(UserDto updateUser, Long userId) {
+    public User updateUser(User user, Long userId) {
         validateFoundForUser(userId);
-        updateUser.setId(userId);
-        if (updateUser.getEmail() != null && updateUser.getName() != null) {
+        user.setId(userId);
+        if (user.getEmail() != null && user.getName() != null) {
             userEmailRepository.remove(users.get(userId).getEmail());
-            users.get(userId).setEmail(updateUser.getEmail());
-            users.get(userId).setName(updateUser.getName());
+            users.get(userId).setEmail(user.getEmail());
+            users.get(userId).setName(user.getName());
             userEmailRepository.put(users.get(userId).getEmail(), users.get(userId));
-        } else if (updateUser.getEmail() != null) {
-            validateForExistEmailWithOtherOwner(userId, updateUser);
+        } else if (user.getEmail() != null) {
+            validateForExistEmailWithOtherOwner(userId, user);
             userEmailRepository.remove(users.get(userId).getEmail());
-            users.get(userId).setEmail(updateUser.getEmail());
+            users.get(userId).setEmail(user.getEmail());
             userEmailRepository.put(users.get(userId).getEmail(), users.get(userId));
-            updateUser.setName(users.get(userId).getName());
+            user.setName(users.get(userId).getName());
         } else {
-            users.get(userId).setName(updateUser.getName());
+            users.get(userId).setName(user.getName());
             userEmailRepository.put(users.get(userId).getEmail(), users.get(userId));
-            updateUser.setEmail(users.get(userId).getEmail());
+            user.setEmail(users.get(userId).getEmail());
         }
-        return updateUser;
+        return user;
     }
 
     @Override
@@ -86,9 +82,9 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
-    private void validateForExistEmailWithOtherOwner(long userId, UserDto userDto) {
-        if (userEmailRepository.containsKey(userDto.getEmail())) {
-            if (userEmailRepository.get(userDto.getEmail()).getId() != userId)
+    private void validateForExistEmailWithOtherOwner(long userId, User user) {
+        if (userEmailRepository.containsKey(user.getEmail())) {
+            if (userEmailRepository.get(user.getEmail()).getId() != userId)
                 throw new AlreadyExsist("Пользователь с таким email уже существует");
         }
     }

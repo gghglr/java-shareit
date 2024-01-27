@@ -9,10 +9,9 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 @RequiredArgsConstructor
-@AllArgsConstructor
 public class UserDto {
 
-    private Long id;
+    private long id;
     @NotBlank(message = "Поле name пустое")
     private String name;
     @NotBlank(message = "Поле email пустое")

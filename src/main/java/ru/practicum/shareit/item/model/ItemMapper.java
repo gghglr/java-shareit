@@ -4,12 +4,12 @@ import ru.practicum.shareit.item.dto.ItemDto;
 
 public class ItemMapper {
     public static ItemDto toItemDto(Item item) {
-        return new ItemDto(
-                item.getId(),
-                item.getName(),
-                item.getDescription(),
-                item.isAvailable()
-        );
+        ItemDto itemDto = new ItemDto();
+        itemDto.setId(item.getId());
+        itemDto.setName(item.getName());
+        itemDto.setDescription(item.getDescription());
+        itemDto.setAvailable(item.isAvailable());
+        return itemDto;
     }
 
     public static Item toItem(ItemDto itemDto) {

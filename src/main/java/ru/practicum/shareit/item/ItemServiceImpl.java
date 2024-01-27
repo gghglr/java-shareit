@@ -3,9 +3,11 @@ package ru.practicum.shareit.item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.ItemMapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -19,17 +21,19 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto createItem(Long userId, ItemDto itemDto) {
-        return itemRepository.createItem(userId, itemDto);
+        return ItemMapper.toItemDto(itemRepository.createItem(userId, ItemMapper.toItem(itemDto)));
+
     }
 
     @Override
     public ItemDto updateItem(Long userId, ItemDto itemDto, Long itemId) {
-        return itemRepository.updateItem(userId, itemDto, itemId);
+        return ItemMapper.toItemDto(itemRepository.updateItem(userId, ItemMapper.toItem(itemDto), itemId));
     }
 
     @Override
     public List<ItemDto> getAllItemForOwner(Long userId) {
-        return itemRepository.getAllItemForOwner(userId);
+        return itemRepository.getAllItemForOwner(userId).stream().
+                map(x -> ItemMapper.toItemDto(x)).collect(Collectors.toList());
     }
 
     @Override
@@ -37,11 +41,12 @@ public class ItemServiceImpl implements ItemService {
         if (text.isBlank()) {
             return new ArrayList<>();
         }
-        return itemRepository.searchItem(userId, text);
+        return itemRepository.searchItem(userId, text).stream().
+                map(x -> ItemMapper.toItemDto(x)).collect(Collectors.toList());
     }
 
     @Override
     public ItemDto getItemById(Long itemId) {
-        return itemRepository.getItemById(itemId);
+        return ItemMapper.toItemDto(itemRepository.getItemById(itemId));
     }
 }

@@ -6,13 +6,13 @@ import java.util.List;
 
 public interface UserRepository {
 
-    List<UserDto> getUsers();
+    List<User> getUsers();
 
-    UserDto getUserById(Long userId);
+    User getUserById(Long userId);
 
-    UserDto createUser(UserDto user);
+    User createUser(User user);
 
-    UserDto updateUser(UserDto updateUser, Long userId);
+    User updateUser(User updateUser, Long userId);
 
     void deleteUser(Long userId);
 }
