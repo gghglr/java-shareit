@@ -32,8 +32,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getAllItemForOwner(Long userId) {
-        return itemRepository.getAllItemForOwner(userId).stream().
-                map(x -> ItemMapper.toItemDto(x)).collect(Collectors.toList());
+        return itemRepository.getAllItemForOwner(userId).stream()
+                .map(x -> ItemMapper.toItemDto(x)).collect(Collectors.toList());
     }
 
     @Override
@@ -41,8 +41,8 @@ public class ItemServiceImpl implements ItemService {
         if (text.isBlank()) {
             return new ArrayList<>();
         }
-        return itemRepository.searchItem(userId, text).stream().
-                map(x -> ItemMapper.toItemDto(x)).collect(Collectors.toList());
+        return itemRepository.searchItem(userId, text).stream()
+                .map(x -> ItemMapper.toItemDto(x)).collect(Collectors.toList());
     }
 
     @Override
