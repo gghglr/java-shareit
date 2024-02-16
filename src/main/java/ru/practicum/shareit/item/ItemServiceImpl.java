@@ -70,7 +70,7 @@ public class ItemServiceImpl implements ItemService {
         Optional<Item> itemOptional = itemRepository.findById(itemId);
         validateFoundForItem(itemOptional);
         Item item = itemOptional.get();
-        List<Comment> comments = commentRepository.findByItem(itemId);
+        List<Comment> comments = commentRepository.findByItem_Id(itemId);
         List<CommentDto> commentDto = new ArrayList<>();
         for (Comment comment : comments) {
             commentDto.add(CommentMapper.toCommentDto(comment));
