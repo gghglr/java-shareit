@@ -127,8 +127,8 @@ public class ItemServiceImpl implements ItemService {
         if (bookings.isEmpty()) {
             throw new ValidationException("Пользователь не бронировал эту вещь");
         }
-       return commentRepository.save(CommentMapper.
-               toComment(commentDto, itemOptional.get(), userOptional.get().getName()));
+       return commentRepository.save(CommentMapper
+               .toComment(commentDto, itemOptional.get(), userOptional.get().getName()));
     }
 
     private void validateFoundForItem(Optional<Item> itemOptional) {
