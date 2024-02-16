@@ -19,5 +19,7 @@ public class ItemDto {
     private String description;
     @AssertTrue(message = "поле available пустое")
     private boolean available;
+    private BookingItemDto lastBooking;
+    private BookingItemDto nextBooking;
 }
 
