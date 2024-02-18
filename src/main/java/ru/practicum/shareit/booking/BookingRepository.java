@@ -47,33 +47,4 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query(value = "SELECT b FROM Booking b WHERE b.item.id = ?1 AND b.booker.id = ?2 " +
             "AND b.status = 'APPROVED' AND b.end < CURRENT_TIME ORDER BY b.start DESC")
     List<Booking> findBookingByItem(long itemId, long bookerId);
-
-
-    /*@QueryMethod:
-            findAllForUser:
-            @Query(value = "SELECT b FROM Booking b WHERE b.booker.id = ?1 ORDER BY b.start DESC")
-            List<Booking> findAllBookerForUser(long idUser);
-            FindFutureForUser:
-            @Query(value = "SELECT b FROM Booking b WHERE b.booker.id = ?1 AND " +
-            "CURRENT_TIME < b.start ORDER BY b.start DESC")
-            FindForUserWaiting:
-            @Query(value = "SELECT b FROM Booking AS b WHERE b.booker.id = ?1 AND b.status = 'WAITING' ORDER BY b.start DESC")
-            List<Booking> getWaitingBookerForUser(long userId);
-            FindForUserRejected:
-            @Query(value = "SELECT b FROM Booking AS b WHERE b.booker.id = ?1 AND " +
-            "b.status = 'REJECTED' ORDER BY b.start DESC")
-            List<Booking> getRejectedBookerForUser(long userId);
-            FindAllForOwner:
-            @Query(value = "SELECT b FROM Booking AS b WHERE b.item.owner.id = ?1 " +
-            "ORDER BY b.start DESC")
-            List<Booking> findAllBookerForOwner(long userId);
-            FindFutureForOwner:
-            @Query(value = "SELECT b FROM Booking b WHERE b.item.owner.id = ?1 AND " +
-            "CURRENT_TIME < b.start ORDER BY b.start DESC")
-            List<Booking> findFutureBookerForOwner(long userId);
-            findForOwnerWaiting
-            @Query(value = "SELECT b FROM Booking AS b WHERE b.item.owner.id = ?1 AND " +
-            "b.status = 'WAITING' ORDER BY b.start DESC")
-            List<Booking> findWaitingBookerForOwner(long userId);
-     */
 }
