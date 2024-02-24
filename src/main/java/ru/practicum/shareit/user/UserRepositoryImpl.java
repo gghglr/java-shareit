@@ -10,18 +10,18 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class UserRepositoryImpl implements UserRepository {
+public class UserRepositoryImpl {
 
     private Map<Long, User> users = new HashMap<>();//айди юзера и сам юзер
     private final Map<String, User> userEmailRepository = new HashMap<>();
     Long userId = 1L;
 
-    @Override
+
     public List<User> getUsers() {
         return users.values().stream().collect(Collectors.toList());
     }
 
-    @Override
+
     public User getUserById(Long userId) {
         if (users.containsKey(userId)) {
             return users.get(userId);
@@ -30,7 +30,7 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
-    @Override
+
     public User createUser(User user) {
         if (userEmailRepository.containsKey(user.getEmail())) {
             throw new AlreadyExsist("Пользователь c такой почтой уже существует");
@@ -43,7 +43,7 @@ public class UserRepositoryImpl implements UserRepository {
         return user;
     }
 
-    @Override
+
     public User updateUser(User user, Long userId) {
         validateFoundForUser(userId);
         user.setId(userId);
@@ -66,7 +66,7 @@ public class UserRepositoryImpl implements UserRepository {
         return user;
     }
 
-    @Override
+
     public void deleteUser(Long userId) {
         if (users.containsKey(userId)) {
             userEmailRepository.remove(users.get(userId).getEmail());
