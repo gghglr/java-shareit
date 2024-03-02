@@ -45,4 +45,16 @@ public class ItemRequestControllerTest {
 
         assertThat(itemRequestDtoCreate.getId(), equalTo(1L));
     }
+
+    @Test
+    void getRequests() throws Exception {
+
+        UserDto userDtoCreate = userController.createUser(userDto1);
+        RequestDto itemRequestDtoCreate =
+                itemRequestController.createRequest(userDtoCreate.getId(), requestDto);
+
+        assertThat(1, equalTo(itemRequestController.getRequests(1).size()));
+        assertThat(1, equalTo(itemRequestController.getCurrentCountOfRequests(2, 0, 1).size()));
+        assertThat("test", equalTo(itemRequestController.getRequestById(1, 1).getDescription()));
+    }
 }

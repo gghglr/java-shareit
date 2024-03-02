@@ -69,6 +69,18 @@ public class ItemRequestServiceImplTest {
     }
 
     @Test
+    void getCurrentCountOfRequest() {
+
+        UserDto userDtoCreate = userService.createUser(userDto1);
+        UserDto userDtoCreate2 = userService.createUser(userDto2);
+        RequestDto itemRequestCreate =
+                requestService.createRequest(itemRequestDto, userDtoCreate.getId());
+        RequestDto getRequest = requestService.getRequestById(1, 1);
+
+        assertThat(1, equalTo(requestService.getCurrentCountOfRequests(0, 1, 2).size()));
+    }
+
+    @Test
     void createItemRequestWrongIdUser() {
         UserDto userDtoCreate = userService.createUser(userDto1);
 
@@ -145,7 +157,6 @@ public class ItemRequestServiceImplTest {
                 equalTo("Такого пользователя не существует"));
     }
 
-
     @Test
     void findAllItemRequestWithItem() {
         UserDto userDtoCreate1 = userService.createUser(userDto1);
@@ -193,4 +204,6 @@ public class ItemRequestServiceImplTest {
         assertThat(notFoundException.getMessage(),
                 equalTo("Такого пользователя не существует"));
     }
+
+
 }

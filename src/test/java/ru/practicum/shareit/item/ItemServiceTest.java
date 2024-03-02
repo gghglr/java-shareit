@@ -47,6 +47,7 @@ public class ItemServiceTest {
     ItemDto itemDto3 = new ItemDto();
     ItemDto itemDto4 = new ItemDto();
     ItemDto itemDto5 = new ItemDto();
+    ItemDto itemDto6 = new ItemDto();
     CommentDto commentDto1 = new CommentDto();
 
     @BeforeEach
@@ -64,6 +65,7 @@ public class ItemServiceTest {
         itemDto3.setName("update");
         itemDto4.setDescription("update6");
         itemDto5.setAvailable(false);
+        itemDto6.setDescription("newDescOnly");
         commentDto1.setText("test");
     }
 
@@ -112,6 +114,16 @@ public class ItemServiceTest {
         assertThat(item2.getDescription(), equalTo(itemDtoUpdate2.getDescription()));
         assertThat(item2.getOwner(), equalTo(UserMapper.toUser(userDto)));
         assertThat(item2.isAvailable(), equalTo(itemDtoUpdate2.isAvailable()));
+
+        ItemDto itemDtoUpdate3 = itemService.updateItem(userDto.getId(), itemDto6, itemDto.getId());
+        TypedQuery<Item> query3 = em.createQuery("SELECT i FROM Item i WHERE i.id = :id", Item.class);
+        Item item3 = query3.setParameter("id", itemDtoUpdate3.getId()).getSingleResult();
+
+        assertThat(item3.getName(), equalTo(itemDtoUpdate3.getName()));
+        assertThat(item3.getDescription(), equalTo(itemDtoUpdate3.getDescription()));
+        assertThat(item3.getOwner(), equalTo(UserMapper.toUser(userDto)));
+        assertThat(item3.isAvailable(), equalTo(itemDtoUpdate3.isAvailable()));
+
     }
 
     @Test

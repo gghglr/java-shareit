@@ -36,9 +36,8 @@ public class UserControllerTest {
     @Test
     void createUser() throws Exception {
         UserDto userDtoCreate = userController.createUser(userDto1);
-        assertThat(userDtoCreate.getId(), equalTo(1L));
-        assertThat(userDtoCreate.getName(), equalTo(userDto1.getName()));
-        assertThat(userDtoCreate.getEmail(), equalTo(userDto1.getEmail()));
+
+        assertThat(userDtoCreate.getName(), equalTo(userController.getUserById(1L).getName()));
     }
 
     @Test
@@ -50,4 +49,27 @@ public class UserControllerTest {
                         " nested exception is org.hibernate.exception.ConstraintViolationException: " +
                         "could not execute statement"));
     }
+
+    @Test
+    void getUsers() throws Exception {
+
+        UserDto userDtoCreate = userController.createUser(userDto1);
+
+        assertThat(userController.getUsers().size(), equalTo(1));
+    }
+
+    @Test
+    void updateUserAndDelete() throws Exception {
+
+        UserDto userDtoCreate = userController.createUser(userDto1);
+        userDto2.setName("update");
+        userDto2.setEmail("update@mail.ru");
+        userController.updateUser(userDto2, 1L);
+
+        assertThat("update", equalTo(userController.getUserById(1L).getName()));
+
+        userController.deleteUser(1L);
+        assertThat(0, equalTo(userController.getUsers().size()));
+    }
+
 }

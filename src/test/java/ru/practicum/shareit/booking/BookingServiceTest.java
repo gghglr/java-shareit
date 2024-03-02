@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.ItemServiceImpl;
@@ -113,6 +114,27 @@ public class BookingServiceTest {
                 () -> bookingService.createBooking(bookingDtoWrong, userDtoCreate1.getId()));
         assertThat(validationExceptionIncorrectTime.getMessage(),
                 equalTo("Неверные параметры для времени, проверьте правильность запроса"));
+    }
+
+    @Test
+    void itemEmptyComment() throws Exception {
+        UserDto userDtoCreate1 = userService.createUser(userDto1);
+        UserDto userDtoCreate2 = userService.createUser(userDto2);
+        ItemDto itemDtoCreate = itemService.createItem(userDtoCreate2.getId(), itemDto2);
+        BookingDto bookingDto1 = new BookingDto();
+        bookingDto1.setItemId(itemDtoCreate.getId());
+        bookingDto1.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingDto1.setEnd(LocalDateTime.now().plusSeconds(2));
+        BookingDto bookingDtoCreate1 = bookingService.createBooking(bookingDto1, userDtoCreate1.getId());
+        bookingService.approvedBooking(userDtoCreate2.getId(), bookingDtoCreate1.getId(), true);
+        CommentDto commentDto = new CommentDto();
+        commentDto.setText("");
+        TimeUnit.SECONDS.sleep(3);
+
+        ValidationException emptyComment = assertThrows(ValidationException.class,
+                () -> itemService.createComment(1, commentDto, 1));
+        assertThat(emptyComment.getMessage(),
+                equalTo("Пустой комментарий"));
     }
 
     @Test
