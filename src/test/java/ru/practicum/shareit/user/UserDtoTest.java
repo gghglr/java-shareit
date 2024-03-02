@@ -23,6 +23,6 @@ public class UserDtoTest {
         JsonContent<UserDto> result = json.write(userDto);
         assertThat(result).extractingJsonPathNumberValue("$.id").isEqualTo(1);
         assertThat(result).extractingJsonPathStringValue("$.name").isEqualTo("test");
-        assertThat(result).extractingJsonPathStringValue("$.email").isEqualTo("test@test.ru");
+        assertThat(result).extractingJsonPathStringValue("$.email").isEqualTo("test@mail.ru");
     }
 }
