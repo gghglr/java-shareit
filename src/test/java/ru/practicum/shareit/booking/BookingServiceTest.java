@@ -39,8 +39,6 @@ public class BookingServiceTest {
     UserDto userDto2 = new UserDto();
     ItemDto itemDto1 = new ItemDto();
     ItemDto itemDto2 = new ItemDto();
-    LocalDateTime end;
-    LocalDateTime start;
 
     @BeforeEach
     void setUp() {
@@ -61,12 +59,10 @@ public class BookingServiceTest {
         UserDto userDtoCreate1 = userService.createUser(userDto1);
         UserDto userDtoCreate2 = userService.createUser(userDto2);
         ItemDto itemDtoCreate = itemService.createItem(userDtoCreate2.getId(), itemDto2);
-        end = LocalDateTime.now().plusSeconds(3);
-        start = LocalDateTime.now().plusSeconds(2);
         BookingDto bookingDto1 = new BookingDto();
         bookingDto1.setItemId(itemDtoCreate.getId());
-        bookingDto1.setStart(start);
-        bookingDto1.setEnd(end);
+        bookingDto1.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingDto1.setEnd(LocalDateTime.now().plusSeconds(4));
         BookingDto bookingDtoCreate1 = bookingService.createBooking(bookingDto1, userDtoCreate1.getId());
         bookingService.approvedBooking(userDtoCreate2.getId(), bookingDtoCreate1.getId(), true);
         TimeUnit.SECONDS.sleep(4);
@@ -104,12 +100,10 @@ public class BookingServiceTest {
         UserDto userDtoCreate1 = userService.createUser(userDto1);
         UserDto userDtoCreate2 = userService.createUser(userDto2);
         ItemDto itemDtoCreate = itemService.createItem(userDtoCreate2.getId(), itemDto2);
-        end = LocalDateTime.now().minusDays(2);
-        start = LocalDateTime.now().minusDays(3);
         BookingDto bookingDtoWrong = new BookingDto();
         bookingDtoWrong.setItemId(itemDtoCreate.getId());
-        bookingDtoWrong.setStart(start);
-        bookingDtoWrong.setEnd(end);
+        bookingDtoWrong.setStart(LocalDateTime.now());
+        bookingDtoWrong.setEnd(LocalDateTime.now().plusSeconds(2));
         ValidationException validationExceptionIncorrectTime = assertThrows(ValidationException.class,
                 () -> bookingService.createBooking(bookingDtoWrong, userDtoCreate1.getId()));
         assertThat(validationExceptionIncorrectTime.getMessage(),
@@ -142,12 +136,10 @@ public class BookingServiceTest {
         UserDto userDtoCreate1 = userService.createUser(userDto1);
         UserDto userDtoCreate2 = userService.createUser(userDto2);
         ItemDto itemDtoCreate = itemService.createItem(userDtoCreate2.getId(), itemDto2);
-        end = LocalDateTime.now().plusSeconds(3);
-        start = LocalDateTime.now().plusSeconds(2);
         BookingDto bookingDto = new BookingDto();
         bookingDto.setItemId(itemDtoCreate.getId());
-        bookingDto.setStart(start);
-        bookingDto.setEnd(end);
+        bookingDto.setStart(LocalDateTime.now());
+        bookingDto.setEnd(LocalDateTime.now().plusSeconds(2));
         NotFoundException notFoundExceptionIncorrectUserId = assertThrows(NotFoundException.class,
                 () -> bookingService.createBooking(bookingDto, userDtoCreate1.getId() + 10));
         assertThat(notFoundExceptionIncorrectUserId.getMessage(),
@@ -159,12 +151,10 @@ public class BookingServiceTest {
         UserDto userDtoCreate1 = userService.createUser(userDto1);
         UserDto userDtoCreate2 = userService.createUser(userDto2);
         ItemDto itemDtoCreate = itemService.createItem(userDtoCreate2.getId(), itemDto2);
-        end = LocalDateTime.now().plusSeconds(3);
-        start = LocalDateTime.now().plusSeconds(2);
         BookingDto bookingDto = new BookingDto();
         bookingDto.setItemId(itemDtoCreate.getId() + 5);
-        bookingDto.setStart(start);
-        bookingDto.setEnd(end);
+        bookingDto.setStart(LocalDateTime.now());
+        bookingDto.setEnd(LocalDateTime.now().plusSeconds(2));
 
         NotFoundException notFoundExceptionIncorrectItemId = assertThrows(NotFoundException.class,
                 () -> bookingService.createBooking(bookingDto, userDtoCreate1.getId()));
@@ -178,12 +168,10 @@ public class BookingServiceTest {
         UserDto userDtoCreate2 = userService.createUser(userDto2);
         itemDto2.setAvailable(false);
         ItemDto itemDtoCreate = itemService.createItem(userDtoCreate2.getId(), itemDto2);
-        end = LocalDateTime.now().plusSeconds(3);
-        start = LocalDateTime.now().plusSeconds(2);
         BookingDto bookingDto = new BookingDto();
         bookingDto.setItemId(itemDtoCreate.getId());
-        bookingDto.setStart(start);
-        bookingDto.setEnd(end);
+        bookingDto.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingDto.setEnd(LocalDateTime.now().plusSeconds(2));
 
         ValidationException validationExceptionIncorrectTime = assertThrows(ValidationException.class,
                 () -> bookingService.createBooking(bookingDto, userDtoCreate1.getId()));
@@ -196,20 +184,16 @@ public class BookingServiceTest {
         UserDto userDtoCreate1 = userService.createUser(userDto1);
         UserDto userDtoCreate2 = userService.createUser(userDto2);
         ItemDto itemDtoCreate = itemService.createItem(userDtoCreate2.getId(), itemDto2);
-        end = LocalDateTime.now().plusSeconds(3);
-        start = LocalDateTime.now().plusSeconds(2);
         BookingDto bookingDto1 = new BookingDto();
         bookingDto1.setItemId(itemDtoCreate.getId());
-        bookingDto1.setStart(start);
-        bookingDto1.setEnd(end);
+        bookingDto1.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingDto1.setEnd(LocalDateTime.now().plusSeconds(2));
         BookingDto bookingDtoCreate1 = bookingService.createBooking(bookingDto1, userDtoCreate1.getId());
         bookingService.approvedBooking(userDtoCreate2.getId(), bookingDtoCreate1.getId(), true);
-        end = LocalDateTime.now().plusSeconds(3);
-        start = LocalDateTime.now().plusSeconds(2);
         BookingDto bookingDto2 = new BookingDto();
         bookingDto2.setItemId(itemDtoCreate.getId());
-        bookingDto2.setStart(start);
-        bookingDto2.setEnd(end);
+        bookingDto2.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingDto2.setEnd(LocalDateTime.now().plusSeconds(2));
 
         ValidationException validationExceptionIncorrectTime = assertThrows(ValidationException.class,
                 () -> bookingService.createBooking(bookingDto2, userDtoCreate1.getId()));
@@ -222,12 +206,10 @@ public class BookingServiceTest {
         UserDto userDtoCreate1 = userService.createUser(userDto1);
         UserDto userDtoCreate2 = userService.createUser(userDto2);
         ItemDto itemDtoCreate = itemService.createItem(userDtoCreate2.getId(), itemDto2);
-        end = LocalDateTime.now().plusSeconds(3);
-        start = LocalDateTime.now().plusSeconds(2);
         BookingDto bookingDto = new BookingDto();
         bookingDto.setItemId(itemDtoCreate.getId());
-        bookingDto.setStart(start);
-        bookingDto.setEnd(end);
+        bookingDto.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingDto.setEnd(LocalDateTime.now().plusSeconds(2));
         BookingDto bookingDtoCreate1 = bookingService.createBooking(bookingDto, userDtoCreate1.getId());
         bookingService.approvedBooking(userDtoCreate2.getId(), bookingDtoCreate1.getId(), true);
         TypedQuery<Booking> query =
@@ -242,12 +224,10 @@ public class BookingServiceTest {
         UserDto userDtoCreate1 = userService.createUser(userDto1);
         UserDto userDtoCreate2 = userService.createUser(userDto2);
         ItemDto itemDtoCreate = itemService.createItem(userDtoCreate2.getId(), itemDto2);
-        end = LocalDateTime.now().plusSeconds(3);
-        start = LocalDateTime.now().plusSeconds(2);
         BookingDto bookingDto = new BookingDto();
         bookingDto.setItemId(itemDtoCreate.getId());
-        bookingDto.setStart(start);
-        bookingDto.setEnd(end);
+        bookingDto.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingDto.setEnd(LocalDateTime.now().plusSeconds(2));
         BookingDto bookingDtoCreate1 = bookingService.createBooking(bookingDto, userDtoCreate1.getId());
         bookingService.approvedBooking(userDtoCreate1.getId(), bookingDtoCreate1.getId(), false);
         TypedQuery<Booking> query =
@@ -262,12 +242,10 @@ public class BookingServiceTest {
         UserDto userDtoCreate1 = userService.createUser(userDto1);
         UserDto userDtoCreate2 = userService.createUser(userDto2);
         ItemDto itemDtoCreate = itemService.createItem(userDtoCreate2.getId(), itemDto2);
-        end = LocalDateTime.now().plusSeconds(3);
-        start = LocalDateTime.now().plusSeconds(2);
         BookingDto bookingDto = new BookingDto();
         bookingDto.setItemId(itemDtoCreate.getId());
-        bookingDto.setStart(start);
-        bookingDto.setEnd(end);
+        bookingDto.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingDto.setEnd(LocalDateTime.now().plusSeconds(2));
         BookingDto bookingDtoCreate1 = bookingService.createBooking(bookingDto, userDtoCreate1.getId());
         bookingService.approvedBooking(userDtoCreate2.getId(), bookingDtoCreate1.getId(), false);
         TypedQuery<Booking> query =
@@ -282,12 +260,10 @@ public class BookingServiceTest {
         UserDto userDtoCreate1 = userService.createUser(userDto1);
         UserDto userDtoCreate2 = userService.createUser(userDto2);
         ItemDto itemDtoCreate = itemService.createItem(userDtoCreate2.getId(), itemDto2);
-        end = LocalDateTime.now().plusSeconds(3);
-        start = LocalDateTime.now().plusSeconds(2);
         BookingDto bookingDto = new BookingDto();
         bookingDto.setItemId(itemDtoCreate.getId());
-        bookingDto.setStart(start);
-        bookingDto.setEnd(end);
+        bookingDto.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingDto.setEnd(LocalDateTime.now().plusSeconds(2));
         BookingDto bookingDtoCreate1 = bookingService.createBooking(bookingDto, userDtoCreate1.getId());
 
         NotFoundException validationExceptionIncorrectUserId = assertThrows(NotFoundException.class,
@@ -302,12 +278,10 @@ public class BookingServiceTest {
         UserDto userDtoCreate1 = userService.createUser(userDto1);
         UserDto userDtoCreate2 = userService.createUser(userDto2);
         ItemDto itemDtoCreate = itemService.createItem(userDtoCreate2.getId(), itemDto2);
-        end = LocalDateTime.now().plusSeconds(3);
-        start = LocalDateTime.now().plusSeconds(2);
         BookingDto bookingDto = new BookingDto();
         bookingDto.setItemId(itemDtoCreate.getId());
-        bookingDto.setStart(start);
-        bookingDto.setEnd(end);
+        bookingDto.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingDto.setEnd(LocalDateTime.now().plusSeconds(2));
         BookingDto bookingDtoCreate1 = bookingService.createBooking(bookingDto, userDtoCreate1.getId());
 
         NotFoundException validationExceptionIncorrectBookingId = assertThrows(NotFoundException.class,
@@ -322,12 +296,10 @@ public class BookingServiceTest {
         UserDto userDtoCreate1 = userService.createUser(userDto1);
         UserDto userDtoCreate2 = userService.createUser(userDto2);
         ItemDto itemDtoCreate = itemService.createItem(userDtoCreate2.getId(), itemDto2);
-        end = LocalDateTime.now().plusSeconds(3);
-        start = LocalDateTime.now().plusSeconds(2);
         BookingDto bookingDto = new BookingDto();
         bookingDto.setItemId(itemDtoCreate.getId());
-        bookingDto.setStart(start);
-        bookingDto.setEnd(end);
+        bookingDto.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingDto.setEnd(LocalDateTime.now().plusSeconds(2));
         BookingDto bookingDtoCreate1 = bookingService.createBooking(bookingDto, userDtoCreate1.getId());
         bookingService.approvedBooking(userDtoCreate2.getId(), bookingDtoCreate1.getId(), true);
 
@@ -347,12 +319,10 @@ public class BookingServiceTest {
         userDto3.setEmail("test3@mail3.ru");
         UserDto userDtoCreate3 = userService.createUser(userDto3);
         ItemDto itemDtoCreate = itemService.createItem(userDtoCreate2.getId(), itemDto2);
-        end = LocalDateTime.now().plusSeconds(3);
-        start = LocalDateTime.now().plusSeconds(2);
         BookingDto bookingDto = new BookingDto();
         bookingDto.setItemId(itemDtoCreate.getId());
-        bookingDto.setStart(start);
-        bookingDto.setEnd(end);
+        bookingDto.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingDto.setEnd(LocalDateTime.now().plusSeconds(2));
         BookingDto bookingDtoCreate1 = bookingService.createBooking(bookingDto, userDtoCreate1.getId());
 
         NotFoundException validationExceptionIncorrectBookingId = assertThrows(NotFoundException.class,
@@ -367,12 +337,10 @@ public class BookingServiceTest {
         UserDto userDtoCreate1 = userService.createUser(userDto1);
         UserDto userDtoCreate2 = userService.createUser(userDto2);
         ItemDto itemDtoCreate = itemService.createItem(userDtoCreate2.getId(), itemDto2);
-        end = LocalDateTime.now().plusSeconds(3);
-        start = LocalDateTime.now().plusSeconds(2);
         BookingDto bookingDto = new BookingDto();
         bookingDto.setItemId(itemDtoCreate.getId());
-        bookingDto.setStart(start);
-        bookingDto.setEnd(end);
+        bookingDto.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingDto.setEnd(LocalDateTime.now().plusSeconds(2));
         BookingDto bookingDtoCreate1 = bookingService.createBooking(bookingDto, userDtoCreate1.getId());
 
         NotFoundException validationExceptionWithBookerId = assertThrows(NotFoundException.class,
@@ -388,12 +356,10 @@ public class BookingServiceTest {
         UserDto userDtoCreate2 = userService.createUser(userDto2);
         ItemDto itemDtoCreate1 = itemService.createItem(userDtoCreate1.getId(), itemDto1);
         ItemDto itemDtoCreate = itemService.createItem(userDtoCreate2.getId(), itemDto2);
-        end = LocalDateTime.now().plusSeconds(3);
-        start = LocalDateTime.now().plusSeconds(2);
         BookingDto bookingDto1 = new BookingDto();
         bookingDto1.setItemId(itemDtoCreate.getId());
-        bookingDto1.setStart(start);
-        bookingDto1.setEnd(end);
+        bookingDto1.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingDto1.setEnd(LocalDateTime.now().plusSeconds(2));
         BookingDto bookingDtoCreate1 = bookingService.createBooking(bookingDto1, userDtoCreate1.getId());
         bookingService.approvedBooking(userDtoCreate2.getId(), bookingDtoCreate1.getId(), true);
         TimeUnit.SECONDS.sleep(4);
@@ -431,12 +397,10 @@ public class BookingServiceTest {
         UserDto userDtoCreate2 = userService.createUser(userDto2);
         ItemDto itemDtoCreate1 = itemService.createItem(userDtoCreate1.getId(), itemDto1);
         ItemDto itemDtoCreate = itemService.createItem(userDtoCreate2.getId(), itemDto2);
-        end = LocalDateTime.now().plusSeconds(3);
-        start = LocalDateTime.now().plusSeconds(2);
         BookingDto bookingDto1 = new BookingDto();
         bookingDto1.setItemId(itemDtoCreate.getId());
-        bookingDto1.setStart(start);
-        bookingDto1.setEnd(end);
+        bookingDto1.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingDto1.setEnd(LocalDateTime.now().plusSeconds(2));
         BookingDto bookingDtoCreate1 = bookingService.createBooking(bookingDto1, userDtoCreate1.getId());
         TypedQuery<Booking> query =
                 em.createQuery("SELECT b FROM Booking b WHERE b.id = :id", Booking.class);
@@ -455,12 +419,10 @@ public class BookingServiceTest {
         UserDto userDtoCreate3 = userService.createUser(userDto3);
         ItemDto itemDtoCreate1 = itemService.createItem(userDtoCreate1.getId(), itemDto1);
         ItemDto itemDtoCreate = itemService.createItem(userDtoCreate2.getId(), itemDto2);
-        end = LocalDateTime.now().plusSeconds(3);
-        start = LocalDateTime.now().plusSeconds(2);
         BookingDto bookingDto1 = new BookingDto();
         bookingDto1.setItemId(itemDtoCreate.getId());
-        bookingDto1.setStart(start);
-        bookingDto1.setEnd(end);
+        bookingDto1.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingDto1.setEnd(LocalDateTime.now().plusSeconds(2));
         BookingDto bookingDtoCreate1 = bookingService.createBooking(bookingDto1, userDtoCreate1.getId());
         NotFoundException validationExceptionIncorrectUserId = assertThrows(NotFoundException.class,
                 () -> bookingService.getBookingById(userDtoCreate1.getId() + 5, bookingDtoCreate1.getId()));
@@ -477,12 +439,10 @@ public class BookingServiceTest {
         userDto3.setEmail("test3@mail3.ru");
         UserDto userDtoCreate3 = userService.createUser(userDto3);
         ItemDto itemDtoCreate = itemService.createItem(userDtoCreate2.getId(), itemDto2);
-        end = LocalDateTime.now().plusSeconds(3);
-        start = LocalDateTime.now().plusSeconds(2);
         BookingDto bookingDto1 = new BookingDto();
         bookingDto1.setItemId(itemDtoCreate.getId());
-        bookingDto1.setStart(start);
-        bookingDto1.setEnd(end);
+        bookingDto1.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingDto1.setEnd(LocalDateTime.now().plusSeconds(2));
         BookingDto bookingDtoCreate1 = bookingService.createBooking(bookingDto1, userDtoCreate1.getId());
 
         NotFoundException validationExceptionIncorrectUserId = assertThrows(NotFoundException.class,
@@ -496,12 +456,10 @@ public class BookingServiceTest {
         UserDto userDtoCreate1 = userService.createUser(userDto1);
         UserDto userDtoCreate2 = userService.createUser(userDto2);
         ItemDto itemDtoCreate = itemService.createItem(userDtoCreate2.getId(), itemDto2);
-        end = LocalDateTime.now().plusSeconds(3);
-        start = LocalDateTime.now().plusSeconds(2);
         BookingDto bookingDto1 = new BookingDto();
         bookingDto1.setItemId(itemDtoCreate.getId());
-        bookingDto1.setStart(start);
-        bookingDto1.setEnd(end);
+        bookingDto1.setStart(LocalDateTime.now().plusSeconds(1));
+        bookingDto1.setEnd(LocalDateTime.now().plusSeconds(2));
         BookingDto bookingDtoCreate1 = bookingService.createBooking(bookingDto1, userDtoCreate1.getId());
 
         NotFoundException validationExceptionIncorrectBookingId = assertThrows(NotFoundException.class,
