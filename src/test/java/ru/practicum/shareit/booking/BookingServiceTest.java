@@ -65,7 +65,7 @@ public class BookingServiceTest {
         bookingDto1.setEnd(LocalDateTime.now().plusSeconds(4));
         BookingDto bookingDtoCreate1 = bookingService.createBooking(bookingDto1, userDtoCreate1.getId());
         bookingService.approvedBooking(userDtoCreate2.getId(), bookingDtoCreate1.getId(), true);
-        TimeUnit.SECONDS.sleep(4);
+        TimeUnit.SECONDS.sleep(2);
         TypedQuery<Booking> query =
                 em.createQuery("SELECT b FROM Booking b WHERE b.item.owner.id = :id", Booking.class);
         List<Booking> bookings = query.setParameter("id", userDtoCreate2.getId()).getResultList();
