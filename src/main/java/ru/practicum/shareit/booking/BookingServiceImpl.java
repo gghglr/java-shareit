@@ -152,8 +152,8 @@ public class BookingServiceImpl implements BookingService {
                                 PageRequest.of(from, size))
                         .stream().map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
             case REJECTED:
-                return bookingRepository.
-                        findByItem_Owner_IdAndStatusOrderByStartDesc(userId, Status.REJECTED,
+                return bookingRepository
+                        .findByItem_Owner_IdAndStatusOrderByStartDesc(userId, Status.REJECTED,
                                 PageRequest.of(from, size))
                         .stream().map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
             default:
