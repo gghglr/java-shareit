@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUserById(Long userId) {
+    public UserDto getUserById(long userId) {
         Optional<User> user = userRepository.findById(userId);
         validateFoundForUser(user, userId);
         return UserMapper.userToDto(user.get());
@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto updateUser(UserDto userDto, Long userId) {
+    public UserDto updateUser(UserDto userDto, long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
         validateFoundForUser(userOptional, userId);
         if (userDto.getEmail() != null && userDto.getName() != null) {
@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long userId) {
+    public void deleteUser(long userId) {
         Optional<User> user = userRepository.findById(userId);
         validateFoundForUser(user, userId);
         userRepository.deleteById(userId);
