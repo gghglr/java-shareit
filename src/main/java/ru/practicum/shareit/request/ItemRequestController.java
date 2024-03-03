@@ -29,14 +29,14 @@ public class ItemRequestController {
 
     @GetMapping
     public List<RequestDto> getRequests(@RequestHeader("X-Sharer-User-Id") long userId) {
-        log.info("Получение всех запросов");
+        log.info("Получение всех запросов без ограничений");
         return requestService.getRequests(userId);
     }
 
     @GetMapping("/{requestId}")
     public RequestDto getRequestById(@RequestHeader("X-Sharer-User-Id") long userId,
                                      @PathVariable("requestId") long requestId) {
-        log.info("Получение всех запросов");
+        log.info("Получение определенного запроса");
         return requestService.getRequestById(requestId, userId);
     }
 
@@ -44,7 +44,7 @@ public class ItemRequestController {
     public List<RequestDto> getCurrentCountOfRequests(@RequestHeader("X-Sharer-User-Id") long userId,
                                                       @RequestParam(value = "from", defaultValue = "0") int from,
                                                       @RequestParam(value = "size", defaultValue = "20") int size) {
-        log.info("Получение всех запросов");
+        log.info("Получение определенного количества запросов");
         return requestService.getCurrentCountOfRequests(from, size, userId);
     }
 

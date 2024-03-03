@@ -8,6 +8,7 @@ import ru.practicum.shareit.item.model.Item;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -24,5 +25,5 @@ public class RequestDto {
     private boolean available;
     private long userId;
     @Transient
-    private List<Item> items;
+    private List<Item> items = new ArrayList<>();
 }

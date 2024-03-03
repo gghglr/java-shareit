@@ -38,31 +38,24 @@ public class RequestServiceImpl implements RequestService {
     public List<RequestDto> getRequests(long userId) {
         validForExistUser(userId);
         List<RequestDto> requestsForUser = requestRepository.findForUser(userId).stream()
-                .map(x -> RequestMapper.requestToDto(x)).collect(Collectors.toList());
-        for (RequestDto requestDto : requestsForUser) {
-            if (!itemRepository.findByRequestId(requestDto.getId()).isEmpty()) {
-                List<Item> items = itemRepository.findByRequestId(requestDto.getId());
-                requestDto.setItems(items);
-            } else {
-                requestDto.setItems(new ArrayList<>());
-            }
-
-        }
+                .map(request -> {
+                    RequestDto requestDto = RequestMapper.requestToDto(request);
+                    List<Item> items = itemRepository.findByRequestId(requestDto.getId());
+                    requestDto.setItems(items);
+                    return requestDto;
+                }).collect(Collectors.toList());
         return requestsForUser;
     }
 
     @Override
     public List<RequestDto> getCurrentCountOfRequests(int from, int size, long userId) {
         List<RequestDto> requestsForUser = requestRepository.findAllExceptOwner(PageRequest.of(from, size), userId).stream()
-                .map(x -> RequestMapper.requestToDto(x)).collect(Collectors.toList());
-        for (RequestDto requestDto : requestsForUser) {
-            if (!itemRepository.findByRequestId(requestDto.getId()).isEmpty()) {
-                List<Item> items = itemRepository.findByRequestId(requestDto.getId());
-                requestDto.setItems(items);
-            } else {
-                requestDto.setItems(new ArrayList<>());
-            }
-        }
+                .map(request -> {
+                    RequestDto requestDto = RequestMapper.requestToDto(request);
+                    List<Item> items = itemRepository.findByRequestId(requestDto.getId());
+                    requestDto.setItems(items);
+                    return requestDto;
+                }).collect(Collectors.toList());
         return requestsForUser;
     }
 
