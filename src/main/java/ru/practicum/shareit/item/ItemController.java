@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.comment.Comment;
 import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
@@ -38,16 +37,20 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> getAllItemForOwner(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public List<ItemDto> getAllItemForOwner(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                            @RequestParam(value = "from", defaultValue = "0") int from,
+                                            @RequestParam(value = "size", defaultValue = "100") int size) {
         log.info("Владелец запросил список своих вещей");
-        return itemService.getAllItemForOwner(userId);
+        return itemService.getAllItemForOwner(from, size, userId);
     }
 
     @GetMapping("/search")
     public List<ItemDto> searchItem(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                    @RequestParam(name = "text", defaultValue = "") String text) {
+                                    @RequestParam(name = "text", defaultValue = "") String text,
+                                    @RequestParam(value = "from", defaultValue = "0") int from,
+                                    @RequestParam(value = "size", defaultValue = "100") int size) {
         log.info("Запрос на поиск вещи по содержанию");
-        return itemService.getItemForBooker(text, userId);
+        return itemService.getItemForBooker(text, userId, from, size);
     }
 
     @GetMapping("/{itemId}")
@@ -58,9 +61,9 @@ public class ItemController {
     }
 
     @PostMapping("/{itemId}/comment")
-    public Comment createComment(@RequestHeader("X-Sharer-User-Id") long idUser,
-                                 @RequestBody CommentDto commentDto,
-                                 @PathVariable("itemId") long itemId) {
+    public CommentDto createComment(@RequestHeader("X-Sharer-User-Id") long idUser,
+                                    @RequestBody CommentDto commentDto,
+                                    @PathVariable("itemId") long itemId) {
         log.info("Получен запрос на добавление комментария");
         return itemService.createComment(idUser, commentDto, itemId);
     }

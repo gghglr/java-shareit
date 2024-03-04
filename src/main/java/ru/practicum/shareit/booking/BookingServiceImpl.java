@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.exception.NotFoundException;
@@ -72,37 +73,43 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> getAllBookingForUser(long userId, String state) {
+    public List<BookingDto> getAllBookingForUser(long userId, String state, int from, int size) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
         try {
             State.valueOf(state);
+            int count = bookingRepository.getCount(userId);
+            if (count < size + from) {
+                size = count - from;
+            }
         } catch (IllegalArgumentException e) {
             throw new ValidationException("Unknown state: UNSUPPORTED_STATUS");
         }
         switch (State.valueOf(state)) {
             case ALL:
-                return bookingRepository.findByBooker_IdOrderByStartDesc(userId).stream().map(x -> BookingMapper.bookingToDto(x))
-                        .collect(Collectors.toList());
+                return bookingRepository.findByBooker_IdOrderByStartDesc(userId, PageRequest.of(from, size)).stream()
+                        .map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
             case CURRENT:
-                return bookingRepository.findCurrentBookerForUser(userId).stream()
+                return bookingRepository.findCurrentBookerForUser(userId, PageRequest.of(from, size)).stream()
                         .map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
             case PAST:
-                return bookingRepository.getPastBooking(userId).stream()
+                return bookingRepository.getPastBooking(userId, PageRequest.of(from, size)).stream()
                         .map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
             case FUTURE:
-                return bookingRepository.findByBooker_IdAndStartAfterOrderByStartDesc(userId, timeNow).stream()
-                        .map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
+                return bookingRepository
+                        .findByBooker_IdAndStartAfterOrderByStartDesc(userId, timeNow, PageRequest.of(from, size))
+                        .stream().map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
 
             case WAITING:
-                return bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(userId, Status.WAITING)
+                return bookingRepository
+                        .findByBooker_IdAndStatusOrderByStartDesc(userId, Status.WAITING, PageRequest.of(from, size))
                         .stream()
                         .map(x -> BookingMapper.bookingToDto(x))
                         .collect(Collectors.toList());
             case REJECTED:
-                return bookingRepository.findByBooker_IdAndStatusOrderByStartDesc(userId, Status.REJECTED)
-                        .stream()
-                        .map(x -> BookingMapper.bookingToDto(x))
+                return bookingRepository
+                        .findByBooker_IdAndStatusOrderByStartDesc(userId, Status.REJECTED, PageRequest.of(from, size))
+                        .stream().map(x -> BookingMapper.bookingToDto(x))
                         .collect(Collectors.toList());
             default:
                 throw new ValidationException("Unknown state: UNSUPPORTED_STATUS");
@@ -110,33 +117,45 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> getAllBookingForOwner(long userId, String state) {
+    public List<BookingDto> getAllBookingForOwner(long userId, String state, int from, int size) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
         try {
             State.valueOf(state);
+            int count = bookingRepository.getCountForOwner(userId);
+            if (count < size + from) {
+                size = count - from;
+            }
         } catch (IllegalArgumentException e) {
             throw new ValidationException("Unknown state: UNSUPPORTED_STATUS");
         }
         switch (State.valueOf(state)) {
             case ALL:
-                return bookingRepository.findByItem_Owner_IdOrderByStartDesc(userId).stream()
+                return bookingRepository
+                        .findByItem_Owner_IdOrderByStartDesc(userId, PageRequest.of(from, size)).stream()
                         .map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
             case CURRENT:
-                return bookingRepository.findCurrentBookerForOwner(userId).stream()
+                return bookingRepository
+                        .findCurrentBookerForOwner(userId, PageRequest.of(from, size)).stream()
                         .map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
             case PAST:
-                return bookingRepository.findPastBookerForOwner(userId).stream()
+                return bookingRepository
+                        .findPastBookerForOwner(userId, PageRequest.of(from, size)).stream()
                         .map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
             case FUTURE:
-                return bookingRepository.findByItem_Owner_IdAndStartAfterOrderByStartDesc(userId, timeNow).stream()
-                        .map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
+                return bookingRepository
+                        .findByItem_Owner_IdAndStartAfterOrderByStartDesc(userId, timeNow, PageRequest.of(from, size))
+                        .stream().map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
             case WAITING:
-                return bookingRepository.findByItem_Owner_IdAndStatusOrderByStartDesc(userId, Status.WAITING).stream()
-                        .map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
+                return bookingRepository
+                        .findByItem_Owner_IdAndStatusOrderByStartDesc(userId, Status.WAITING,
+                                PageRequest.of(from, size))
+                        .stream().map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
             case REJECTED:
-                return bookingRepository.findByItem_Owner_IdAndStatusOrderByStartDesc(userId, Status.REJECTED).stream()
-                        .map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
+                return bookingRepository
+                        .findByItem_Owner_IdAndStatusOrderByStartDesc(userId, Status.REJECTED,
+                                PageRequest.of(from, size))
+                        .stream().map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
             default:
                 throw new ValidationException("Неверный статус");
         }

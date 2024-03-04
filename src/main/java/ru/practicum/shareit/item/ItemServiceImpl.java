@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
@@ -33,9 +34,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto createItem(Long userId, ItemDto itemDto) {
-       Optional<User> userOpt = userRepository.findById(userId);
-       validateUserFounded(userOpt);
-       return ItemMapper.toItemDto(itemRepository.save(ItemMapper.toItem(itemDto, userOpt.get())));
+        Optional<User> userOpt = userRepository.findById(userId);
+        validateUserFounded(userOpt);
+        return ItemMapper.toItemDto(itemRepository.save(ItemMapper.toItem(itemDto, userOpt.get())));
     }
 
     @Override
@@ -87,10 +88,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getAllItemForOwner(long userId) {
+    public List<ItemDto> getAllItemForOwner(int from, int size, long userId) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
-        List<Item> items = itemRepository.findByOwner_id(userId);
+        List<Item> items = itemRepository.findByOwner_id(PageRequest.of(from, size), userId);
         List<ItemDto> itemDto = new ArrayList<>();
         for (Item item : items) {
             List<Booking> bookings = bookingRepository.findBookingByItemAndOwner(item.getId(), item.getOwner().getId());
@@ -104,20 +105,20 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getItemForBooker(String text, long userId) {
+    public List<ItemDto> getItemForBooker(String text, long userId, int from, int size) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
         if (text.isBlank()) {
             return new ArrayList<>();
         }
-        return itemRepository.getItemForBooker(text.toLowerCase().trim())
+        return itemRepository.getItemForBooker(text.toLowerCase().trim(), PageRequest.of(from, size))
                 .stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Comment createComment(long userId, CommentDto commentDto, long itemId) {
+    public CommentDto createComment(long userId, CommentDto commentDto, long itemId) {
         validateComment(commentDto);
         Optional<User> userOptional = userRepository.findById(userId);
         validateUserFounded(userOptional);
@@ -127,8 +128,8 @@ public class ItemServiceImpl implements ItemService {
         if (bookings.isEmpty()) {
             throw new ValidationException("Пользователь не бронировал эту вещь");
         }
-       return commentRepository.save(CommentMapper
-               .toComment(commentDto, itemOptional.get(), userOptional.get().getName()));
+        return CommentMapper.toCommentDto(commentRepository.save(CommentMapper.toComment(commentDto,
+                itemOptional.get(), userOptional.get().getName())));
     }
 
     private void validateFoundForItem(Optional<Item> itemOptional) {
