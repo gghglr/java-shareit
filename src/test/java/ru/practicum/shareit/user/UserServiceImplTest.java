@@ -65,10 +65,8 @@ public class UserServiceImplTest {
         DataIntegrityViolationException dataIntegrityViolationException = assertThrows(DataIntegrityViolationException.class,
                 () -> userService.createUser(userDto1));
         assertThat(dataIntegrityViolationException.getMessage(),
-                equalTo("could not execute statement; SQL [n/a]; " +
-                        "constraint [null]; " +
-                        "nested exception is org.hibernate.exception.ConstraintViolationException: " +
-                        "could not execute statement"));
+                equalTo("could not execute statement; SQL [n/a]; constraint [uq_user_email]; nested exception" +
+                        " is org.hibernate.exception.ConstraintViolationException: could not execute statement"));
     }
 
     @Test
@@ -78,9 +76,9 @@ public class UserServiceImplTest {
         DataIntegrityViolationException conflictException
                 = assertThrows(DataIntegrityViolationException.class,
                 () -> userService.createUser(userDto));
-        assertThat(conflictException.getMessage(), equalTo("could not execute statement; SQL [n/a]; " +
-                "constraint [null]; nested exception is org.hibernate.exception.ConstraintViolationException: " +
-                "could not execute statement"));
+        assertThat(conflictException.getMessage(), equalTo("could not execute statement; SQL [n/a];" +
+                " constraint [name\" of relation \"users]; nested exception is org.hibernate.exception" +
+                ".ConstraintViolationException: could not execute statement"));
     }
 
     @Test

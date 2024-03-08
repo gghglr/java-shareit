@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    List<Item> findByOwner_id(Pageable pageable, long userId);
+    List<Item> findByOwner_idOrderByIdAsc(Pageable pageable, long userId);
 
     @Query(value = "SELECT i FROM Item AS i WHERE ((UPPER(i.name) LIKE UPPER(CONCAT('%', ?1, '%')) " +
             "OR UPPER(i.description) LIKE UPPER(CONCAT('%', ?1, '%'))) AND i.available IS TRUE)")

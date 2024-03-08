@@ -45,9 +45,9 @@ public class UserControllerTest {
         DataIntegrityViolationException conflictException = assertThrows(DataIntegrityViolationException.class,
                 () -> userController.createUser(userDto2));
         assertThat(conflictException.getMessage(),
-                equalTo("could not execute statement; SQL [n/a]; constraint [null];" +
-                        " nested exception is org.hibernate.exception.ConstraintViolationException: " +
-                        "could not execute statement"));
+                equalTo("could not execute statement; SQL [n/a]; constraint [email\" of relation \"users];" +
+                        " nested exception is org.hibernate.exception" +
+                        ".ConstraintViolationException: could not execute statement"));
     }
 
     @Test
