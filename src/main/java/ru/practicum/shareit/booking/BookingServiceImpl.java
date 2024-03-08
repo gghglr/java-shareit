@@ -90,7 +90,8 @@ public class BookingServiceImpl implements BookingService {
                 return bookingRepository.findByBooker_IdOrderByStartDesc(userId, PageRequest.of(from, size)).stream()
                         .map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
             case CURRENT:
-                return bookingRepository.findCurrentBookerForUser(userId, PageRequest.of(from, size)).stream()
+                return bookingRepository.findByBooker_IdAndStartLessThanEqualAndEndAfter(userId,
+                                PageRequest.of(from, size)).stream()
                         .map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
             case PAST:
                 return bookingRepository.getPastBooking(userId, PageRequest.of(from, size)).stream()
@@ -102,13 +103,13 @@ public class BookingServiceImpl implements BookingService {
 
             case WAITING:
                 return bookingRepository
-                        .findByBooker_IdAndStatusOrderByStartDesc(userId, Status.WAITING, PageRequest.of(from, size))
+                        .findByBooker_IdAndStatusEqualsOrderByStartDesc(userId, Status.WAITING, PageRequest.of(from, size))
                         .stream()
                         .map(x -> BookingMapper.bookingToDto(x))
                         .collect(Collectors.toList());
             case REJECTED:
                 return bookingRepository
-                        .findByBooker_IdAndStatusOrderByStartDesc(userId, Status.REJECTED, PageRequest.of(from, size))
+                        .findByBooker_IdAndStatusEqualsOrderByStartDesc(userId, Status.REJECTED, PageRequest.of(from, size))
                         .stream().map(x -> BookingMapper.bookingToDto(x))
                         .collect(Collectors.toList());
             default:
@@ -148,12 +149,12 @@ public class BookingServiceImpl implements BookingService {
                         .stream().map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
             case WAITING:
                 return bookingRepository
-                        .findByItem_Owner_IdAndStatusOrderByStartDesc(userId, Status.WAITING,
+                        .findByItem_Owner_IdAndStatusEqualsOrderByStartDesc(userId, Status.WAITING,
                                 PageRequest.of(from, size))
                         .stream().map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
             case REJECTED:
                 return bookingRepository
-                        .findByItem_Owner_IdAndStatusOrderByStartDesc(userId, Status.REJECTED,
+                        .findByItem_Owner_IdAndStatusEqualsOrderByStartDesc(userId, Status.REJECTED,
                                 PageRequest.of(from, size))
                         .stream().map(x -> BookingMapper.bookingToDto(x)).collect(Collectors.toList());
             default:

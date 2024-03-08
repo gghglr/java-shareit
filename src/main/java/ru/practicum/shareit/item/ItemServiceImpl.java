@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.comment.Comment;
 import ru.practicum.shareit.comment.CommentMapper;
 import ru.practicum.shareit.comment.CommentRepository;
@@ -18,6 +19,7 @@ import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -91,7 +93,7 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDto> getAllItemForOwner(int from, int size, long userId) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
-        List<Item> items = itemRepository.findByOwner_id(PageRequest.of(from, size), userId);
+        List<Item> items = itemRepository.findByOwner_idOrderByIdAsc(PageRequest.of(from, size), userId);
         List<ItemDto> itemDto = new ArrayList<>();
         for (Item item : items) {
             List<Booking> bookings = bookingRepository.findBookingByItemAndOwner(item.getId(), item.getOwner().getId());
@@ -124,7 +126,8 @@ public class ItemServiceImpl implements ItemService {
         validateUserFounded(userOptional);
         Optional<Item> itemOptional = itemRepository.findById(itemId);
         validateFoundForItem(itemOptional);
-        List<Booking> bookings = bookingRepository.findBookingByItem(itemId, userId);
+        List<Booking> bookings = bookingRepository.findByItem_IdAndBooker_IdAndStatusEqualsAndStartLessThan(itemId,
+                userId, Status.APPROVED, LocalDateTime.now());
         if (bookings.isEmpty()) {
             throw new ValidationException("Пользователь не бронировал эту вещь");
         }
