@@ -26,6 +26,7 @@ services:
       - POSTGRES_DB=shareIt
       - POSTGRES_USER=sa
       - POSTGRES_PASSWORD=password
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5555
 
   db:
     image: postgres:13.7-alpine
