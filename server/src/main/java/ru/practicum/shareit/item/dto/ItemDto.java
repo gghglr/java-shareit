@@ -4,9 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.NotBlank;
-
 @Data
 @RequiredArgsConstructor
 @AllArgsConstructor
