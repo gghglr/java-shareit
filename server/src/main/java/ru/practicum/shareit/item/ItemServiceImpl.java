@@ -151,10 +151,4 @@ public class ItemServiceImpl implements ItemService {
             throw new NotFoundException("У пользователя с id = " + userId + " нет вещи с id = " + itemId);
         }
     }
-
-    private void validateComment(CommentDto commentDto) {
-        if (commentDto.getText().isEmpty()) {
-            throw new ValidationException("Пустой комментарий");
-        }
-    }
 }

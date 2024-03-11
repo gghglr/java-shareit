@@ -166,7 +166,7 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
-    private void validFoundForBookerOrOwner(Optional<Booking> booking, long userId) {
+    public void validFoundForBookerOrOwner(Optional<Booking> booking, long userId) {
         if (!(booking.get().getBooker().getId() == userId || booking.get().getItem().getOwner().getId() == userId)) {
             throw new NotFoundException("Бронирование не найдено");
         }
@@ -178,7 +178,7 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
-    private void validFoundForItem(Optional<Item> itemOptional) {
+    public void validFoundForItem(Optional<Item> itemOptional) {
         if (itemOptional.isEmpty()) {
             throw new NotFoundException("Вещь с данным id не найдена");
         }

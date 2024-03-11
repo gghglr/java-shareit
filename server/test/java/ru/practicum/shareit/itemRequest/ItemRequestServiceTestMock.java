@@ -13,9 +13,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.request.RequestRepository;
 import ru.practicum.shareit.request.RequestServiceImpl;
-import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.User;
-
+import ru.practicum.shareit.user.UserRepository;
 
 import java.util.Optional;
 

@@ -32,7 +32,6 @@ public class UserServiceTest {
         User user = new User();
         Mockito.when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(user));
         UserDto userDto = userService.getUserById(1L);
-
         assertThat(userDto.getName(), equalTo(user.getName()));
     }
 
